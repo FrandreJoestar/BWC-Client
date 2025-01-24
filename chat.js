@@ -50,10 +50,10 @@ async function initializeApp() {
         document.addEventListener('click', (event) => {
             const sidebar = document.getElementById('sidebar');
             const showSidebarBtn = document.getElementById('showSidebar');
-            
+
             // 如果侧边栏是打开的，并且点击的不是侧边栏内部或显示按钮
-            if (sidebar.classList.contains('active') && 
-                !sidebar.contains(event.target) && 
+            if (sidebar.classList.contains('active') &&
+                !sidebar.contains(event.target) &&
                 !showSidebarBtn.contains(event.target)) {
                 sidebar.classList.remove('active');
             }
@@ -257,7 +257,18 @@ function displayMessage(message, scrollToBottom = true) {
 
         const messageBubble = document.createElement('div');
         messageBubble.className = 'message-bubble';
-        messageBubble.textContent = message.content;
+        // messageBubble.textContent = message.content;
+
+        const reg = /\[CQ:img,base64\/\/(.*?)\]/g;
+        messageBubble.innerHTML = message.content.replace(reg, (match, p1) => {
+            const imgBase64 = p1;
+            const img = document.createElement('img');
+            img.src = `data:image/png;base64,${imgBase64}`;
+            img.style.maxWidth = '300px';
+            img.style.maxHeight = '300px';
+            img.style.borderRadius = '5px';
+            return img.outerHTML;
+        });
 
         if (isOwnMessage) {
             messageElement.appendChild(messageBubble);
@@ -284,7 +295,7 @@ function formatTime(timeStr) {
 }
 
 function getCurrentTime() {
-    return new Date().toISOString().replace('T', '-').replace('Z', '').split('.')[0];
+    return new Date(+ new Date() + 8 * 3600 * 1000).toISOString().replace('T', '-').replace('Z', '').split('.')[0];
 }
 
 function sendMessage() {
@@ -460,7 +471,7 @@ window.addEventListener('beforeunload', () => {
 function handleFileUpload(event) {
     const file = event.target.files[0];
     const username = localStorage.getItem('username');
-    
+
     if (file) {
         // 检查文件类型
         if (!file.type.startsWith('image/')) {
