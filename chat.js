@@ -259,11 +259,11 @@ function displayMessage(message, scrollToBottom = true) {
         messageBubble.className = 'message-bubble';
         // messageBubble.textContent = message.content;
 
-        const reg = /\[CQ:img,base64\/\/(.*?)\]/g;
+        const reg = /\[img,(.*?)\]/g;
         messageBubble.innerHTML = message.content.replace(reg, (match, p1) => {
             const imgBase64 = p1;
             const img = document.createElement('img');
-            img.src = `data:image/png;base64,${imgBase64}`;
+            img.src = imgBase64;
             img.style.maxWidth = '300px';
             img.style.maxHeight = '300px';
             img.style.borderRadius = '5px';
@@ -295,7 +295,7 @@ function formatTime(timeStr) {
 }
 
 function getCurrentTime() {
-    return new Date(+ new Date() + 8 * 3600 * 1000).toISOString().replace('T', '-').replace('Z', '').split('.')[0];
+    return new Date().toISOString().replace('T', '-').replace('Z', '').split('.')[0];
 }
 
 function sendMessage() {
